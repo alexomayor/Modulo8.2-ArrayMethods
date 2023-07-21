@@ -79,49 +79,32 @@ const pacientes: Pacientes[] = [
 document.addEventListener("DOMContentLoaded", () => {
   //////////////////////////   APARTADO 1   //////////////////////////
 
-  const obtenPacientesAsignadosAPediatria = (pacientes: Pacientes[]) => {
-    let listaPacientesPediatria: Pacientes[] = [];
-    for (let i = 0; i < pacientes.length; i++) {
-      if (pacientes[i].especialidad == "Pediatra") {
-        listaPacientesPediatria.push(pacientes[i]);
-      }
-    }
-    console.log("Pediatria: ", listaPacientesPediatria);
+  const obtenPacientesAsignadosAPediatria = (
+    pacientes: Pacientes[]
+  ): Pacientes[] => {
+    return pacientes.filter((paciente) => paciente.especialidad === "Pediatra");
   };
-  obtenPacientesAsignadosAPediatria(pacientes);
+  console.log("Pediatria: ", obtenPacientesAsignadosAPediatria(pacientes));
 
   const obtenPacientesAsignadosAPediatriaMenoresDe10 = (
     pacientes: Pacientes[]
-  ) => {
-    let listaPacientesPediatriaMenoresDe10: Pacientes[] = [];
-    for (let i = 0; i < pacientes.length; i++) {
-      if (pacientes[i].especialidad == "Pediatra" && pacientes[i].edad < 10) {
-        listaPacientesPediatriaMenoresDe10.push(pacientes[i]);
-      }
-    }
-    console.log(
-      "Pediatria, menores de 10: ",
-      listaPacientesPediatriaMenoresDe10
+  ): Pacientes[] => {
+    return pacientes.filter(
+      (paciente) => paciente.especialidad === "Pediatra" && paciente.edad < 10
     );
   };
-  obtenPacientesAsignadosAPediatriaMenoresDe10(pacientes);
-
+  console.log(
+    "Pediatria, menores de 10: ",
+    obtenPacientesAsignadosAPediatriaMenoresDe10(pacientes)
+  );
   //////////////////////////   APARTADO 2   //////////////////////////
 
   const activarProtocoloUrgencia = (pacientes: Pacientes[]): boolean => {
-    let activarProctolo = false;
-    for (let i = 0; i < pacientes.length; i++) {
-      if (
-        pacientes[i].temperatura > 39 &&
-        pacientes[i].frecuenciaCardiaca > 100
-      ) {
-        activarProctolo = true;
-        break;
-      }
-    }
-    return activarProctolo;
+    return pacientes.some(
+      (paciente) =>
+        paciente.temperatura > 39 && paciente.frecuenciaCardiaca > 100
+    );
   };
-
   console.log(
     "Protocolo de urgencia activado? ",
     activarProtocoloUrgencia(pacientes)
@@ -132,18 +115,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const reasignaPacientesAMedicoFamilia = (
     pacientes: Pacientes[]
   ): Pacientes[] => {
-    let pacientesPediatraCambiadosMedicoFamilia: Pacientes[] = [];
-    for (let i = 0; i < pacientes.length; i++) {
-      pacientesPediatraCambiadosMedicoFamilia.push(pacientes[i]);
-      if (pacientes[i].especialidad == "Pediatra") {
-        Object.defineProperty(
-          pacientesPediatraCambiadosMedicoFamilia[i],
-          "especialidad",
-          { value: "Medico de familia" }
-        );
-      }
-    }
-    return pacientesPediatraCambiadosMedicoFamilia;
+    return pacientes.map((paciente) =>
+      paciente.especialidad === "Pediatra"
+        ? { ...paciente, especialidad: "Medico de familia" }
+        : paciente
+    );
   };
   console.log(
     "Pacientes con medicos reasignados: ",
@@ -152,19 +128,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //////////////////////////   APARTADO 4   //////////////////////////
 
-  //////////////-------------DOUBLECHECK----------------////////////////////
-  //////////////////////////reasignaPacientesAMedicoFamilia modifies especialidad globally
-  ////////////////////////////////////////////////////
-
   const HayPacientesDePediatria = (pacientes: Pacientes[]): boolean => {
-    let hayPacientes: boolean = false;
-    for (let i = 0; i < pacientes.length; i++) {
-      if (pacientes[i].especialidad == "Pediatra") {
-        hayPacientes = true;
-        break;
-      }
-    }
-    return hayPacientes;
+    return pacientes.some((paciente) => paciente.especialidad === "Pediatra");
   };
   console.log(
     "Hay pacientes para pediatria: ",
@@ -187,15 +152,15 @@ document.addEventListener("DOMContentLoaded", () => {
       pediatria: 0,
       cardiologia: 0,
     };
-    for (let i = 0; i < pacientes.length; i++) {
-      if (pacientes[i].especialidad == "Medico de familia") {
-        numeroPacientesPorEspeciadadlidad.medicoDeFamilia += 1;
-      } else if (pacientes[i].especialidad == "Pediatra") {
-        numeroPacientesPorEspeciadadlidad.pediatria += 1;
-      } else if (pacientes[i].especialidad == "Cardiólogo") {
-        numeroPacientesPorEspeciadadlidad.cardiologia += 1;
-      }
-    }
+    numeroPacientesPorEspeciadadlidad.medicoDeFamilia = pacientes
+      .filter((paciente) => paciente.especialidad === "Medico de familia")
+      .reduce((acc) => acc + 1, 0);
+    numeroPacientesPorEspeciadadlidad.pediatria = pacientes
+      .filter((paciente) => paciente.especialidad === "Pediatra")
+      .reduce((acc) => acc + 1, 0);
+    numeroPacientesPorEspeciadadlidad.cardiologia = pacientes
+      .filter((paciente) => paciente.especialidad === "Cardiólogo")
+      .reduce((acc) => acc + 1, 0);
     return numeroPacientesPorEspeciadadlidad;
   };
   console.log(
