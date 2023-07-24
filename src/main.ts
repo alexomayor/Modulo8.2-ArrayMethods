@@ -152,17 +152,24 @@ document.addEventListener("DOMContentLoaded", () => {
       pediatria: 0,
       cardiologia: 0,
     };
-    numeroPacientesPorEspeciadadlidad.medicoDeFamilia = pacientes
-      .filter((paciente) => paciente.especialidad === "Medico de familia")
-      .reduce((acc) => acc + 1, 0);
-    numeroPacientesPorEspeciadadlidad.pediatria = pacientes
-      .filter((paciente) => paciente.especialidad === "Pediatra")
-      .reduce((acc) => acc + 1, 0);
-    numeroPacientesPorEspeciadadlidad.cardiologia = pacientes
-      .filter((paciente) => paciente.especialidad === "Cardiólogo")
-      .reduce((acc) => acc + 1, 0);
+    numeroPacientesPorEspeciadadlidad.medicoDeFamilia =
+      calculaPacientesPorEspecialidad(pacientes, "Medico de familia");
+    numeroPacientesPorEspeciadadlidad.pediatria =
+      calculaPacientesPorEspecialidad(pacientes, "Pediatra");
+    numeroPacientesPorEspeciadadlidad.cardiologia =
+      calculaPacientesPorEspecialidad(pacientes, "Cardiólogo");
     return numeroPacientesPorEspeciadadlidad;
   };
+
+  function calculaPacientesPorEspecialidad(
+    pacientes: Pacientes[],
+    espec: Especialidad
+  ): number {
+    return pacientes
+      .filter((paciente) => paciente.especialidad === espec)
+      .reduce((acc) => acc + 1, 0);
+  }
+
   console.log(
     "Numero de pacientes por expecialidad: ",
     cuentaPacientesPorEspecialidad(pacientes)
